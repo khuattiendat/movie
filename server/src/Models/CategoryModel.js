@@ -13,10 +13,10 @@ const categoryModel = sequelize.define('categories', {
     },
     description: {
         type: DataTypes.STRING,
-        allowNull: true,
     },
     slug: {
         type: DataTypes.STRING,
+        allowNull: false,
     },
 }, {
     tableName: 'categories',

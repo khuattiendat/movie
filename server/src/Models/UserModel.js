@@ -35,11 +35,9 @@ const UserModel = sequelize.define('users', {
         allowNull: false,
         defaultValue: 2
     },
-    url_image: {
-        type: DataTypes.STRING,
-    }
 }, {
     tableName: 'users',
     timestamps: true,
+    paranoid: true,
 })
 module.exports = UserModel;

@@ -1,6 +1,9 @@
 const {DataTypes} = require('sequelize');
 const {sequelize} = require('../Configs/connect');
-
+const CategoryMovieModel = require('./CategoryMovieModel');
+const ActorMovieModel = require('./ActorMovieModel');
+const CategoryModel = require('./CategoryModel');
+const ActorModel = require('./ActorModel');
 const Movie = sequelize.define('Movie', {
     id: {
         type: DataTypes.INTEGER,
@@ -11,10 +14,10 @@ const Movie = sequelize.define('Movie', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    release_year: {
+    year: {
         type: DataTypes.INTEGER
     },
-    description: {
+    content: {
         type: DataTypes.STRING
     },
     quality: { // 720p, 1080p, 4k
@@ -37,6 +40,12 @@ const Movie = sequelize.define('Movie', {
     },
 }, {
     tableName: 'movies',
-    timestamps: true
+    timestamps: true,
+    paranoid: true,
 });
+// Define associations
+Movie.belongsToMany(CategoryModel, {through: CategoryMovieModel, foreignKey: 'movie_id'});
+CategoryModel.belongsToMany(Movie, {through: CategoryMovieModel, foreignKey: 'category_id'});
+Movie.belongsToMany(ActorModel, {through: ActorMovieModel, foreignKey: 'movie_id'});
+ActorModel.belongsToMany(Movie, {through: ActorMovieModel, foreignKey: 'actor_id'});
 module.exports = Movie;

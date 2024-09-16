@@ -18,9 +18,7 @@ const getAllUser = async (page = 1, search = '') => {
                 limit: pageSize,
                 offset: offset
             })
-            await rows.forEach((item) => {
-                users.push(item.dataValues)
-            })
+            users = rows;
             totalPage = Math.ceil(count / pageSize);
             totalUser = count;
         } else {
@@ -167,7 +165,8 @@ const login = async (user) => {
                 message: 'Password incorrect'
             }
         }
-        const token = generateAccessToken(userExist.id, userExist.role_id);
+        const isAdmin = userExist.role_id.toString() === '1';
+        const token = generateAccessToken(userExist.id, isAdmin);
         const {password: pass, ...userWithoutPassword} = userExist.dataValues;
         return {
             error: false,
@@ -187,7 +186,7 @@ const login = async (user) => {
 }
 const updateUser = async (id, user) => {
     try {
-        const {email, phone, full_name, url_image} = user;
+        const {email, phone, full_name} = user;
         const userExist = await UserModel.findOne({
             where: {
                 id
@@ -215,46 +214,36 @@ const updateUser = async (id, user) => {
                 message: 'Email already exists'
             }
         }
-        const checkPhone = await UserModel.findOne({
-            where: {
-                phone,
-                id: {
-                    [Op.ne]: id
+        if (phone) {
+            const checkPhone = await UserModel.findOne({
+                where: {
+                    phone,
+                    id: {
+                        [Op.ne]: id
+                    }
+                }
+            });
+            if (checkPhone) {
+                return {
+                    error: true,
+                    data: null,
+                    message: 'Phone already exists'
                 }
             }
-        });
-        if (checkPhone) {
-            return {
-                error: true,
-                data: null,
-                message: 'Phone already exists'
-            }
         }
-        const updatedUser = await UserModel.update({
-            email,
-            phone,
-            full_name,
-            url_image
-        }, {
-            where: {
-                id
-            }
-        });
-        if (!updatedUser) {
-            return {
-                error: true,
-                data: null,
-                message: 'Update user failed'
-            }
-        }
+
+        if (email) userExist.email = email;
+        if (phone) userExist.phone = phone;
+        if (full_name) userExist.full_name = full_name;
+        await userExist.save();
         const {password: pass, ...userWithoutPassword} = userExist.dataValues;
         return {
             error: false,
             data: userWithoutPassword,
             message: 'Update user successfully'
         }
-    } catch
-        (error) {
+    } catch (error) {
+        console.log(error)
         return {
             error: true,
             data: null,
