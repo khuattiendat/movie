@@ -89,19 +89,28 @@ const register = async (user) => {
                 message: 'full name is required'
             }
         }
-        const userExist = await UserModel.findOne({
+        const checkEmail = await UserModel.findOne({
             where: {
-                [Op.or]: [
-                    {email},
-                    {phone}
-                ]
+                email
             }
         });
-        if (userExist) {
+        if (checkEmail) {
             return {
                 error: true,
                 data: null,
                 message: 'User already exists'
+            }
+        }
+        const checkPhone = await UserModel.findOne({
+            where: {
+                phone
+            }
+        });
+        if (checkPhone) {
+            return {
+                error: true,
+                data: null,
+                message: 'Phone already exists'
             }
         }
         const salt = await bcrypt.genSalt(10);

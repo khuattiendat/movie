@@ -9,11 +9,11 @@ require('dotenv').config();
 const {connect} = require('./src/Configs/connect');
 const Router = require('./src/Router');
 //
-app.use(morgan('combined'));
 app.use(cors({
     origin: process.env.CLIENT_URL,
-    withCredentials: true,
+    credentials: true
 }));
+app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 //
