@@ -10,6 +10,7 @@ import {useSelector} from "react-redux";
 import {createUser, updateUser} from "../../apis/user.js";
 import {createCategory, updateCategory} from "../../apis/category.js";
 import {createActor, updateActor} from "../../apis/actor.js";
+import NewMovie from "../newMovie/NewMovie.jsx";
 
 const Form = (props) => {
     const {isEdit, type, columns, _data} = props;
@@ -156,31 +157,34 @@ const Form = (props) => {
             <div className="_modal">
                 <h1>Thêm mới {type}</h1>
                 {
-                    type !== 'question' && (
-                        <form onSubmit={handleSubmit}>
-                            {
-                                (isEdit && type === 'user' ? columns.filter(column => column.field !== 'password') : columns)
-                                    .map((column) => (
-                                        <div className="item">
-                                            <label>{column.headerName}</label>
-                                            <input type={column.type} placeholder={column.headerName}
-                                                   name={column.field}
-                                                   required={column.required}
-                                                   value={data[column?.field]}
-                                                   onChange={handleChange}
-                                            />
-                                        </div>
-                                    ))
+                    type !== 'movie' &&
+                    <form onSubmit={handleSubmit}>
+                        {
+                            (isEdit && type === 'user' ? columns.filter(column => column.field !== 'password') : columns)
+                                .map((column) => (
+                                    <div className="item">
+                                        <label>{column.headerName}</label>
+                                        <input type={column.type} placeholder={column.headerName}
+                                               name={column.field}
+                                               required={column.required}
+                                               value={data[column?.field]}
+                                               onChange={handleChange}
+                                        />
+                                    </div>
+                                ))
+                        }
+                        <div className='col-12'>
+                            {loading ? <Loading/> :
+                                <button className='btn btn-success'>{isEdit ? 'Cập nhật' : 'Thêm mới'} </button>
                             }
-                            <div className='col-12'>
-                                {loading ? <Loading/> :
-                                    <button className='btn btn-success'>{isEdit ? 'Cập nhật' : 'Thêm mới'} </button>
-                                }
-                            </div>
+                        </div>
 
-                        </form>
-                    )
+                    </form>
                 }
+                {
+                    type === 'movie' && <NewMovie isEdit={isEdit} columns={columns} _data={_data}/>
+                }
+
             </div>
             <ToastContainer/>
         </div>

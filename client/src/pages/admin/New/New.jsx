@@ -10,8 +10,10 @@ import {getUserById} from "../../../apis/user.js";
 import {getCategoryBySlugOrId} from "../../../apis/category.js";
 import {getActorById} from "../../../apis/actor.js";
 import {inputDataActor} from "../../../utils/data/actor.js";
+import {inputDataMovie} from "../../../utils/data/movieData.js";
+import {getMovieByIdOrSlug} from "../../../apis/movie.js";
 
-const NewUser = ({type, isEdit}) => {
+const New = ({type, isEdit}) => {
     const params = useParams();
     const user = useSelector(state => state.user)
     // const user = JSON.parse(sessionStorage.getItem('user'))
@@ -31,6 +33,9 @@ const NewUser = ({type, isEdit}) => {
                 break;
             case 'actor':
                 setColumns(inputDataActor)
+                break;
+            case 'movie':
+                setColumns(inputDataMovie)
                 break;
             default:
                 break;
@@ -72,6 +77,17 @@ const NewUser = ({type, isEdit}) => {
                     console.log(e)
                 }
                 break;
+            case 'movie':
+                try {
+                    setLoading(true)
+                    let exam = await getMovieByIdOrSlug(id);
+                    setData(exam.data)
+                    setLoading(false)
+                } catch (e) {
+                    setLoading(false)
+                    console.log(e)
+                }
+                break
             default:
                 break;
         }
@@ -101,4 +117,4 @@ const NewUser = ({type, isEdit}) => {
         </div>
     )
 }
-export default NewUser;
+export default New;

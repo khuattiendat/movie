@@ -6,7 +6,7 @@ const CategoryModel = require("../Models/CategoryModel");
 const ActorModel = require("../Models/ActorModel");
 const createMovie = async (data) => {
     try {
-        const {title, content, duration, quality, rating, url_image, url_video, slug, categories, actors} = data;
+        const {title, content, duration, year, quality, rating, url_image, url_video, slug, categories, actors} = data;
         if (!title) {
             return {
                 error: true,
@@ -79,7 +79,8 @@ const createMovie = async (data) => {
             rating,
             url_image,
             url_video,
-            slug
+            slug,
+            year
         });
         await movie.save();
         if (!categories || categories.length === 0) {
@@ -163,7 +164,7 @@ const updateMovie = async (id, data) => {
                 data: null
             }
         }
-        const {title, content, duration, quality, rating, url_image, url_video, categories, actors} = data;
+        const {title, content, year, duration, quality, rating, url_image, url_video, categories, actors} = data;
         if (title) {
             movie.title = title;
         }
@@ -184,6 +185,9 @@ const updateMovie = async (id, data) => {
         }
         if (url_video) {
             movie.url_video = url_video;
+        }
+        if (year) {
+            movie.year = year;
         }
         await movie.save();
         const movieId = movie?.id;

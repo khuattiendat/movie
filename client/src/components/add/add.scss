@@ -50,6 +50,7 @@
       flex-wrap: wrap;
       max-width: 800px;
       justify-content: space-between;
+      margin-bottom: 30px;
 
       .item {
         width: 40%;
@@ -60,6 +61,57 @@
 
         label {
           font-size: 14px;
+        }
+
+        .item_actor {
+          .head {
+            padding: 10px;
+            background-color: transparent;
+            color: white;
+            outline: none;
+            border: 1px solid $soft-color;
+            border-radius: 3px;
+            min-height: 45px;
+          }
+
+          .content {
+            position: relative;
+            margin-top: 10px;
+
+            .w-100 {
+              width: 100%;
+              padding: 10px;
+              border: 1px solid $soft-color;
+              border-radius: 3px;
+              background-color: $main-bg;
+              color: white;
+              outline: none;
+            }
+
+            .category-list {
+              max-height: 120px;
+              overflow-y: auto;
+              background-color: $main-bg;
+              border: 1px solid $soft-color;
+              border-radius: 3px;
+              padding: 10px;
+
+              .category-item {
+                padding: 5px 0;
+                border-bottom: 1px solid $soft-color;
+                text-align: center;
+                cursor: pointer;
+
+                &:last-child {
+                  border-bottom: none;
+                }
+
+                span {
+                  color: $soft-color;
+                }
+              }
+            }
+          }
         }
 
         input, option, select {
