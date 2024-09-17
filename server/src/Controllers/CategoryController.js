@@ -2,7 +2,7 @@ const {
     addCategory,
     deleteCategory,
     getAllCategories,
-    getCategoryBySlug,
+    getCategoryBySlugOrSlug,
     updateCategory
 } = require('../Services/CategoryService')
 const CategoryController = {
@@ -57,7 +57,7 @@ const CategoryController = {
     getCategoryBySlug: async (req, res) => {
         try {
             const {slug} = req.params;
-            const response = await getCategoryBySlug(slug);
+            const response = await getCategoryBySlugOrSlug(slug);
             if (response.error) {
                 return res.status(400).json({
                     error: true,

@@ -51,10 +51,15 @@ const addCategory = async (category) => {
         }
     }
 }
-const getCategoryBySlug = async (slug) => {
+const getCategoryBySlugOrSlug = async (slug) => {
     try {
         const category = await categoryModel.findOne({
-            where: {slug}
+            where: {
+                [Op.or]: [
+                    {slug: slug},
+                    {id: slug}
+                ]
+            }
         })
         if (!category) {
             return {
@@ -78,50 +83,11 @@ const getCategoryBySlug = async (slug) => {
 }
 const getAllCategories = async (page = 1, search = '') => {
     try {
-        let totalPage;
-        let totalCategory;
-        let categories = []
-        let pageSize = 9;
-        let offset = (page - 1) * pageSize;
-        if (page < 1) {
-            page = 1;
-        }
-        if (!search) {
-            const {count, rows} = await categoryModel.findAndCountAll({
-                limit: pageSize,
-                offset: offset
-            });
-            rows.forEach(category => {
-                categories.push(category);
-            })
-            totalPage = Math.ceil(count / pageSize);
-            totalCategory = count;
-        } else {
-            const {count, rows} = await categoryModel.findAndCountAll({
-                where: {
-                    [Op.or]: [
-                        {name: {[Op.like]: '%' + search.trim() + '%'}},
-                        {description: {[Op.like]: '%' + search.trim() + '%'}},
-                        {slug: {[Op.like]: '%' + search.trim() + '%'}},
-                    ]
-                },
-                limit: pageSize,
-                offset: offset
-            });
-            rows.forEach(category => {
-                categories.push(category);
-            })
-            totalPage = Math.ceil(count / pageSize);
-            totalCategory = count;
-        }
+        const categories = await categoryModel.findAll();
         return {
             error: false,
             message: 'Categories found',
-            data: {
-                categories,
-                totalPage,
-                totalCategory
-            }
+            data: categories
         }
     } catch (error) {
         return {
@@ -212,7 +178,7 @@ const deleteCategory = async (id) => {
 
 module.exports = {
     addCategory,
-    getCategoryBySlug,
+    getCategoryBySlugOrSlug,
     getAllCategories,
     updateCategory,
     deleteCategory

@@ -2,53 +2,13 @@ const UserModel = require('../Models/UserModel');
 const {generateAccessToken} = require('../Utils/generateToken');
 const bcrypt = require("bcrypt");
 const {Op} = require('sequelize');
-const getAllUser = async (page = 1, search = '') => {
+const getAllUser = async () => {
     try {
-        let totalPage;
-        let totalUser;
-        let users = []
-        let pageSize = 9;
-        let offset = (page - 1) * pageSize;
-        if (page < 1) {
-            page = 1;
-        }
-        if (!search) {
-            const {rows, count} = await UserModel.findAndCountAll({
-                attributes: {exclude: ['password']},
-                limit: pageSize,
-                offset: offset
-            })
-            users = rows;
-            totalPage = Math.ceil(count / pageSize);
-            totalUser = count;
-        } else {
-            const {count, rows} = await UserModel.findAndCountAll({
-                where: {
-                    [Op.or]: [
-                        {full_name: {[Op.like]: '%' + search.trim() + '%'}},
-                        {email: {[Op.like]: '%' + search.trim() + '%'}},
-                        {phone: {[Op.like]: '%' + search.trim() + '%'}},
-                        {account_type: {[Op.like]: '%' + search.trim() + '%'}},
-                    ]
-                },
-                limit: pageSize,
-                offset: offset
-            })
-            await rows.forEach((item) => {
-                users.push(item.dataValues);
-            })
-            totalPage = Math.ceil(count / pageSize)
-            totalUser = count;
-        }
-
+        const users = await UserModel.findAll();
         return {
             error: false,
-            data: {
-                users,
-                totalUser,
-                totalPage
-            },
-            message: 'Get all users successfully'
+            data: users,
+            message: 'Get all user successfully'
         }
     } catch (error) {
         return {

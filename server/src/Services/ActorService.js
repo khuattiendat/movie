@@ -51,50 +51,13 @@ const getActorById = async (id) => {
         }
     }
 }
-const getAllActors = async (page = 1, search = '') => {
+const getAllActors = async () => {
     try {
-        let totalPage;
-        let totalActors;
-        let actors = []
-        let pageSize = 9;
-        let offset = (page - 1) * pageSize;
-        if (page < 1) {
-            page = 1;
-        }
-        if (!search) {
-            const {rows, count} = await ActorModel.findAndCountAll({
-                limit: pageSize,
-                offset: offset
-            })
-            await rows.forEach((item) => {
-                actors.push(item.dataValues)
-            })
-            totalPage = Math.ceil(count / pageSize);
-            totalActors = count;
-        } else {
-            const {rows, count} = await ActorModel.findAndCountAll({
-                where: {
-                    [Op.or]: [
-                        {name: {[Op.like]: '%' + search.trim() + '%'}},
-                    ]
-                },
-                limit: pageSize,
-                offset: offset
-            })
-            await rows.forEach((item) => {
-                actors.push(item.dataValues)
-            })
-            totalPage = Math.ceil(count / pageSize);
-            totalActors = count
-        }
+        const actors = await ActorModel.findAll();
         return {
             error: false,
             message: 'Actors found',
-            data: {
-                actors,
-                totalPage,
-                totalActors
-            }
+            data: actors
         }
     } catch (error) {
         return {

@@ -12,6 +12,9 @@ import moment from "moment";
 import {deleteUser} from "../../apis/user.js";
 import Loading from "../loading/loadingSpin/Loading.jsx";
 import {useSelector} from "react-redux";
+import {deleteCategory} from "../../apis/category.js";
+import {deleteActor} from "../../apis/actor.js";
+import {deleteMovie} from "../../apis/movie.js";
 
 
 const DataTable = (props) => {
@@ -21,7 +24,6 @@ const DataTable = (props) => {
     const [_loading, setLoading] = useState(false);
     const handleDeleteUser = async (id) => {
         try {
-            console.log(id)
             console.log(user)
             setLoading(true);
             if (id.toString() === user.id.toString()) {
@@ -43,12 +45,69 @@ const DataTable = (props) => {
             console.log(e);
         }
     }
+    const handleDeleteCategory = async (id) => {
+        try {
+            setLoading(true);
+            await deleteCategory(id);
+            toast.success("Xóa thành công", {
+                autoClose: 1000
+            });
+            setLoading(false)
+            navigate(`/admin/${type}/danh-sach`, {
+                state: id,
+            });
+        } catch (e) {
+            setLoading(false)
+            console.log(e);
+        }
+    }
+    const handleDeleteActor = async (id) => {
+        try {
+            setLoading(true);
+            await deleteActor(id);
+            toast.success("Xóa thành công", {
+                autoClose: 1000
+            });
+            setLoading(false)
+            navigate(`/admin/${type}/danh-sach`, {
+                state: id,
+            });
+        } catch (e) {
+            setLoading(false)
+            console.log(e);
+        }
+    }
+    const handleDeleteMovie = async (id) => {
+        try {
+            setLoading(true);
+            await deleteMovie(id);
+            toast.success("Xóa thành công", {
+                autoClose: 1000
+            });
+            setLoading(false)
+            navigate(`/admin/${type}/danh-sach`, {
+                state: id,
+            });
+        } catch (e) {
+            setLoading(false)
+            console.log(e);
+        }
+    }
     const handleDelete = async (id) => {
         let confirm = await showAlertConfirm("Bạn có chắc chắn muốn xóa?", "Dữ liệu sẽ không thể khôi phục");
         if (confirm) {
             switch (type) {
                 case "user":
                     await handleDeleteUser(id);
+                    break;
+                case "category":
+                    await handleDeleteCategory(id);
+                    break;
+                case "actor":
+                    await handleDeleteActor(id);
+                    break;
+                case "movie":
+                    await handleDeleteMovie(id);
                     break;
                 default:
                     break;
@@ -102,10 +161,13 @@ const DataTable = (props) => {
                     className="dataGrid"
                     rows={rows}
                     columns={[...columns, actionColumn]}
+                    components={{
+                        Toolbar: GridToolbar,
+                    }}
                     initialState={{
                         pagination: {
                             paginationModel: {
-                                pageSize: 9,
+                                pageSize: 10,
                             },
                         },
                     }}

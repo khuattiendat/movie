@@ -1,4 +1,4 @@
-const {createMovie, getMovieBySlug, updateMovie, deleteMovie, getAllMovies} = require('../Services/MovieService')
+const {createMovie, getMovieBySlugOrId, updateMovie, deleteMovie, getAllMovies} = require('../Services/MovieService')
 const MovieController = {
     createMovie: async (req, res) => {
         try {
@@ -24,10 +24,10 @@ const MovieController = {
             });
         }
     },
-    getMovieBySlug: async (req, res) => {
+    getMovieBySlugOrId: async (req, res) => {
         try {
             const {slug} = req.params;
-            const result = await getMovieBySlug(slug);
+            const result = await getMovieBySlugOrId(slug);
             if (result.error) {
                 return res.status(400).json({
                     error: true,

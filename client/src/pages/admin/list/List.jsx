@@ -6,9 +6,14 @@ import {useEffect, useState} from "react";
 import {getAllUser} from "../../../apis/user.js";
 import {toast, ToastContainer} from "react-toastify";
 import {useSelector} from "react-redux";
+import {getAllCategory} from "../../../apis/category.js";
+import {categoryColumns} from "../../../utils/data/categoryData.js";
+import {getAllActor} from "../../../apis/actor.js";
+import {actorColumns} from "../../../utils/data/actor.js";
+import {getAllMovies} from "../../../apis/movie.js";
+import {movieColumns} from "../../../utils/data/movieData.js";
 
 const List = ({type}) => {
-    // const user = useSelector(state => state.user);
     const params = useParams()
     const {id} = params;
     const user = useSelector(state => state.user);
@@ -24,14 +29,49 @@ const List = ({type}) => {
                     setLoading(true);
                     const res = await getAllUser();
                     setColumns(userColumns);
-                    setRows(res.data?.users);
+                    setRows(res.data);
                     setLoading(false);
                 } catch (e) {
                     console.log(e);
                     setLoading(false);
                 }
                 break;
-
+            case 'category':
+                try {
+                    setLoading(true);
+                    const res = await getAllCategory();
+                    setColumns(categoryColumns);
+                    setRows(res.data);
+                    setLoading(false);
+                } catch (e) {
+                    console.log(e);
+                    setLoading(false);
+                }
+                break;
+            case 'actor':
+                try {
+                    setLoading(true);
+                    const res = await getAllActor();
+                    setColumns(actorColumns);
+                    setRows(res.data);
+                    setLoading(false);
+                } catch (e) {
+                    console.log(e);
+                    setLoading(false);
+                }
+                break;
+            case 'movie':
+                try {
+                    setLoading(true);
+                    const res = await getAllMovies();
+                    setColumns(movieColumns);
+                    setRows(res.data);
+                    setLoading(false);
+                } catch (e) {
+                    console.log(e);
+                    setLoading(false);
+                }
+                break;
             default:
                 break;
         }

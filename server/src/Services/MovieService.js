@@ -114,11 +114,14 @@ const createMovie = async (data) => {
     }
 
 }
-const getMovieBySlug = async (slug) => {
+const getMovieBySlugOrId = async (slug) => {
     try {
         const movie = await MovieModel.findOne({
             where: {
-                slug
+                [Op.or]: [
+                    {slug},
+                    {id: slug}
+                ]
             },
             include: [
                 {
@@ -250,74 +253,26 @@ const deleteMovie = async (id) => {
         }
     }
 }
-const getAllMovies = async (page = 1, search = '') => {
+const getAllMovies = async () => {
     try {
-        let totalPage;
-        let totalMovie;
-        let movies = []
-        let pageSize = 9;
-        let offset = (page - 1) * pageSize;
-        if (page < 1) {
-            page = 1;
-        }
-        if (!search) {
-            const {count, rows} = await MovieModel.findAndCountAll({
-                limit: pageSize,
-                offset: offset,
-                include: [
-                    {
-                        model: CategoryModel,
-                        attributes: ['id', 'name', 'slug'], // Specify the attributes you want to retrieve
-                        through: {attributes: []} // Exclude join table attributes
-                    },
-                    {
-                        model: ActorModel,
-                        attributes: ['id', 'name'], // Specify the attributes you want to retrieve
-                        through: {attributes: []} // Exclude join table attributes
-                    }
-                ]
-            });
-            movies = rows;
-            totalPage = Math.ceil(count / pageSize);
-            totalMovie = count;
-        } else {
-            const {count, rows} = await MovieModel.findAndCountAll({
-                limit: pageSize,
-                offset: offset,
-                where: {
-                    [Op.or]: [
-                        {title: {[Op.like]: '%' + search + '%'}},
-                        {content: {[Op.like]: '%' + search + '%'}},
-                        {quality: {[Op.like]: '%' + search + '%'}},
-                        {slug: {[Op.like]: '%' + search + '%'}},
-                    ]
+        const movies = await MovieModel.findAll({
+            include: [
+                {
+                    model: CategoryModel,
+                    attributes: ['id', 'name', 'slug'], // Specify the attributes you want to retrieve
+                    through: {attributes: []} // Exclude join table attributes
                 },
-                include: [
-                    {
-                        model: CategoryModel,
-                        attributes: ['id', 'name', 'slug'], // Specify the attributes you want to retrieve
-                        through: {attributes: []} // Exclude join table attributes
-                    },
-                    {
-                        model: ActorModel,
-                        attributes: ['id', 'name'], // Specify the attributes you want to retrieve
-                        through: {attributes: []} // Exclude join table attributes
-                    }
-                ]
-            });
-            movies = rows;
-            totalPage = Math.ceil(count / pageSize);
-            totalMovie = count;
-        }
-
+                {
+                    model: ActorModel,
+                    attributes: ['id', 'name'], // Specify the attributes you want to retrieve
+                    through: {attributes: []} // Exclude join table attributes
+                }
+            ]
+        });
         return {
             error: false,
             message: 'Movies found',
-            data: {
-                movies,
-                totalMovie,
-                totalPage
-            }
+            data: movies
         }
     } catch (error) {
         return {
@@ -329,7 +284,7 @@ const getAllMovies = async (page = 1, search = '') => {
 }
 module.exports = {
     createMovie,
-    getMovieBySlug,
+    getMovieBySlugOrId,
     updateMovie,
     deleteMovie,
     getAllMovies

@@ -7,8 +7,8 @@ export const login = async (payload) => {
     });
     return res.data;
 }
-export const getAllUser = async (page = 1, search = '') => {
-    const res = await axios.get(`${BASE_URL}/api/users/get-all?page=${page}&search=${search}`, {
+export const getAllUser = async () => {
+    const res = await axios.get(`${BASE_URL}/api/users/get-all`, {
         withCredentials: true,
     });
     return res.data;

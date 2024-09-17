@@ -2,12 +2,14 @@ import Form from "../../../components/add/Form.jsx";
 import "./newUser.scss";
 import {useEffect, useState} from "react";
 import {inputDataUser} from "../../../utils/data/userData.js";
-import {inputDataExam} from "../../../utils/data/examData.js";
+import {inputDataCategory} from "../../../utils/data/categoryData.js";
 import {useNavigate, useParams} from "react-router-dom";
 import Loading from "../../../components/loading/loadingSpin/Loading.jsx";
-import {toast} from "react-toastify";
 import {useSelector} from "react-redux";
 import {getUserById} from "../../../apis/user.js";
+import {getCategoryBySlugOrId} from "../../../apis/category.js";
+import {getActorById} from "../../../apis/actor.js";
+import {inputDataActor} from "../../../utils/data/actor.js";
 
 const NewUser = ({type, isEdit}) => {
     const params = useParams();
@@ -23,6 +25,12 @@ const NewUser = ({type, isEdit}) => {
         switch (type) {
             case 'user':
                 setColumns(inputDataUser)
+                break;
+            case 'category':
+                setColumns(inputDataCategory)
+                break;
+            case 'actor':
+                setColumns(inputDataActor)
                 break;
             default:
                 break;
@@ -42,17 +50,28 @@ const NewUser = ({type, isEdit}) => {
                     console.log(e)
                 }
                 break;
-            // case 'question':
-            //     try {
-            //         setLoading(true)
-            //         let question = await getQuestionById(id);
-            //         setData(question.data)
-            //         setLoading(false)
-            //     } catch (e) {
-            //         setLoading(false)
-            //         console.log(e)
-            //     }
-            //     break;
+            case 'category':
+                try {
+                    setLoading(true)
+                    let exam = await getCategoryBySlugOrId(id);
+                    setData(exam.data)
+                    setLoading(false)
+                } catch (e) {
+                    setLoading(false)
+                    console.log(e)
+                }
+                break;
+            case 'actor':
+                try {
+                    setLoading(true)
+                    let exam = await getActorById(id);
+                    setData(exam.data)
+                    setLoading(false)
+                } catch (e) {
+                    setLoading(false)
+                    console.log(e)
+                }
+                break;
             default:
                 break;
         }

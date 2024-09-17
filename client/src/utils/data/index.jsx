@@ -25,13 +25,19 @@ export const menu = [
             },
             {
                 id: 2,
-                title: "Danh sách đề thi",
+                title: "Danh sách tác giả",
+                url: "/admin/actor/danh-sach",
+                icon: "/user.svg",
+            },
+            {
+                id: 3,
+                title: "Danh sách thể loại",
                 url: "/admin/category/danh-sach",
                 icon: "/product.svg",
             },
             {
-                id: 3,
-                title: "Danh sách câu hỏi",
+                id: 4,
+                title: "Danh sách phim",
                 url: "/admin/movie/danh-sach",
                 icon: "/order.svg",
             },

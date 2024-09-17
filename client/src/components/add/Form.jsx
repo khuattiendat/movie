@@ -8,6 +8,8 @@ import {CKEditor} from "@ckeditor/ckeditor5-react";
 import Loading from "../loading/loadingSpin/Loading.jsx";
 import {useSelector} from "react-redux";
 import {createUser, updateUser} from "../../apis/user.js";
+import {createCategory, updateCategory} from "../../apis/category.js";
+import {createActor, updateActor} from "../../apis/actor.js";
 
 const Form = (props) => {
     const {isEdit, type, columns, _data} = props;
@@ -27,6 +29,7 @@ const Form = (props) => {
         const {name, value} = e.target;
         setData({...data, [name]: value});
     }
+    // user
     const handleCreateUser = async () => {
         try {
             setLoading(true);
@@ -57,6 +60,68 @@ const Form = (props) => {
             console.log(e)
         }
     }
+    // category
+    const handleCreateCategory = async () => {
+        try {
+            setLoading(true);
+            await createCategory(data);
+            toast.success('Thêm mới thành công');
+            setLoading(false);
+            navigate(`/admin/category/danh-sach`, {replace: true});
+        } catch (e) {
+            toast.error(e.response.data.message, {
+                autoClose: 1000
+            });
+            setLoading(false);
+            console.log(e)
+        }
+    }
+    const handleUpdateCategory = async () => {
+        try {
+            setLoading(true);
+            await updateCategory(data.id, data);
+            toast.success('Cập nhật thành công');
+            setLoading(false);
+            navigate(`/admin/category/danh-sach`, {replace: true});
+        } catch (e) {
+            toast.error(e.response.data.message, {
+                autoClose: 1000
+            });
+            setLoading(false);
+            console.log(e)
+        }
+    }
+    // actor
+    const handleCreateActor = async () => {
+        try {
+            setLoading(true);
+            await createActor(data);
+            toast.success('Thêm mới thành công');
+            setLoading(false);
+            navigate(`/admin/actor/danh-sach`, {replace: true});
+        } catch (e) {
+            toast.error(e.response.data.message, {
+                autoClose: 1000
+            });
+            setLoading(false);
+            console.log(e)
+        }
+    }
+    const handleUpdateActor = async () => {
+        try {
+            setLoading(true);
+            await updateActor(data.id, data);
+            toast.success('Cập nhật thành công');
+            setLoading(false);
+            navigate(`/admin/actor/danh-sach`, {replace: true});
+        } catch (e) {
+            toast.error(e.response.data.message, {
+                autoClose: 1000
+            });
+            setLoading(false);
+            console.log(e)
+        }
+    }
     //submit
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -67,6 +132,20 @@ const Form = (props) => {
                     return;
                 }
                 await handleCreateUser();
+                break;
+            case 'category':
+                if (isEdit) {
+                    await handleUpdateCategory();
+                    return;
+                }
+                await handleCreateCategory();
+                break;
+            case 'actor':
+                if (isEdit) {
+                    await handleUpdateActor();
+                    return;
+                }
+                await handleCreateActor();
                 break;
             default:
                 break;
