@@ -4,7 +4,8 @@ const CategoryMovieModel = require('./CategoryMovieModel');
 const ActorMovieModel = require('./ActorMovieModel');
 const CategoryModel = require('./CategoryModel');
 const ActorModel = require('./ActorModel');
-const Movie = sequelize.define('Movie', {
+const CommentModel = require('./CommentModel');
+const MovieModel = sequelize.define('Movie', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -38,14 +39,18 @@ const Movie = sequelize.define('Movie', {
     slug: {
         type: DataTypes.STRING
     },
+    account_can_view: {
+        type: DataTypes.STRING
+    }
 }, {
     tableName: 'movies',
     timestamps: true,
     paranoid: true,
 });
 // Define associations
-Movie.belongsToMany(CategoryModel, {through: CategoryMovieModel, foreignKey: 'movie_id'});
-CategoryModel.belongsToMany(Movie, {through: CategoryMovieModel, foreignKey: 'category_id'});
-Movie.belongsToMany(ActorModel, {through: ActorMovieModel, foreignKey: 'movie_id'});
-ActorModel.belongsToMany(Movie, {through: ActorMovieModel, foreignKey: 'actor_id'});
-module.exports = Movie;
+MovieModel.belongsToMany(CategoryModel, {through: CategoryMovieModel, foreignKey: 'movie_id'});
+CategoryModel.belongsToMany(MovieModel, {through: CategoryMovieModel, foreignKey: 'category_id'});
+MovieModel.belongsToMany(ActorModel, {through: ActorMovieModel, foreignKey: 'movie_id'});
+ActorModel.belongsToMany(MovieModel, {through: ActorMovieModel, foreignKey: 'actor_id'});
+MovieModel.hasMany(CommentModel, {foreignKey: 'movie_id'});
+module.exports = MovieModel;

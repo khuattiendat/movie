@@ -1,9 +1,10 @@
 const express = require('express');
 const MovieController = require('../Controllers/MovieController');
+const Middleware = require('../Middlewares/MiddleLogin');
 const router = express.Router();
-router.post('/create', MovieController.createMovie);
-router.get('/get-one/:slug', MovieController.getMovieBySlugOrId);
-router.put('/update/:id', MovieController.updateMovie);
-router.delete('/delete/:id', MovieController.deleteMovie);
-router.get('/get-all', MovieController.getAllMovies);
+router.post('/create', Middleware.verifyTokenAndAdmin, MovieController.createMovie);
+router.get('/get-one/:slug', Middleware.verifyToken, MovieController.getMovieBySlugOrId);
+router.put('/update/:id', Middleware.verifyTokenAndAdmin, MovieController.updateMovie);
+router.delete('/delete/:id', Middleware.verifyTokenAndAdmin, MovieController.deleteMovie);
+router.get('/get-all', Middleware.verifyToken, MovieController.getAllMovies);
 module.exports = router;

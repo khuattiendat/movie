@@ -27,11 +27,14 @@ const List = ({type}) => {
             case 'user':
                 try {
                     setLoading(true);
-                    const res = await getAllUser();
+                    const res = await getAllUser(user?.token);
                     setColumns(userColumns);
                     setRows(res.data);
                     setLoading(false);
                 } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000,
+                    });
                     console.log(e);
                     setLoading(false);
                 }
@@ -39,11 +42,14 @@ const List = ({type}) => {
             case 'category':
                 try {
                     setLoading(true);
-                    const res = await getAllCategory();
+                    const res = await getAllCategory(user?.token);
                     setColumns(categoryColumns);
                     setRows(res.data);
                     setLoading(false);
                 } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000,
+                    });
                     console.log(e);
                     setLoading(false);
                 }
@@ -51,11 +57,14 @@ const List = ({type}) => {
             case 'actor':
                 try {
                     setLoading(true);
-                    const res = await getAllActor();
+                    const res = await getAllActor(user?.token);
                     setColumns(actorColumns);
                     setRows(res.data);
                     setLoading(false);
                 } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000,
+                    });
                     console.log(e);
                     setLoading(false);
                 }
@@ -63,11 +72,14 @@ const List = ({type}) => {
             case 'movie':
                 try {
                     setLoading(true);
-                    const res = await getAllMovies();
+                    const res = await getAllMovies(user?.token);
                     setColumns(movieColumns);
                     setRows(res.data);
                     setLoading(false);
                 } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000,
+                    });
                     console.log(e);
                     setLoading(false);
                 }

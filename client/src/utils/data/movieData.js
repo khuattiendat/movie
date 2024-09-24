@@ -49,6 +49,13 @@ export const movieColumns = [
         width: 200,
     },
     {
+        field: "account_can_view",
+        type: "string",
+        headerName: "Tài khoản xem",
+        required: true,
+        width: 200,
+    },
+    {
         field: "createdAt",
         type: "string",
         headerName: "Ngày tạo",
@@ -67,15 +74,15 @@ export const inputDataMovie = [
     },
     {
         field: "duration",
-        type: "string",
-        headerName: "Thời lượng",
+        type: "number",
+        headerName: "Thời lượng (phút)",
         required: true,
         width: 200,
     },
     {
         field: "quality",
         type: "string",
-        headerName: "Chất lượng",
+        headerName: "Chất lượng ",
         required: true,
         width: 200,
     },

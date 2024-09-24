@@ -4,9 +4,26 @@ const {createCategoryMovie, deleteCategoryMovie} = require("./CategoryMovieServi
 const {Op} = require("sequelize");
 const CategoryModel = require("../Models/CategoryModel");
 const ActorModel = require("../Models/ActorModel");
+const CommentModel = require("../Models/CommentModel");
+const FavoriteModel = require('../Models/FavoriteModel');
+const WatchHistoryModel = require('../Models/WatchHistoryModel');
+const UserModel = require("../Models/UserModel");
 const createMovie = async (data) => {
     try {
-        const {title, content, duration, year, quality, rating, url_image, url_video, slug, categories, actors} = data;
+        const {
+            title,
+            content,
+            duration,
+            year,
+            quality,
+            rating,
+            url_image,
+            url_video,
+            slug,
+            categories,
+            actors,
+            account_can_view
+        } = data;
         if (!title) {
             return {
                 error: true,
@@ -80,7 +97,8 @@ const createMovie = async (data) => {
             url_image,
             url_video,
             slug,
-            year
+            year,
+            account_can_view
         });
         await movie.save();
         if (!categories || categories.length === 0) {
@@ -115,8 +133,10 @@ const createMovie = async (data) => {
     }
 
 }
-const getMovieBySlugOrId = async (slug) => {
+const getMovieBySlugOrId = async (slug, role) => {
     try {
+        CommentModel.belongsTo(UserModel, {foreignKey: 'user_id'});
+        CommentModel.belongsTo(MovieModel, {foreignKey: 'movie_id'});
         const movie = await MovieModel.findOne({
             where: {
                 [Op.or]: [
@@ -134,9 +154,37 @@ const getMovieBySlugOrId = async (slug) => {
                     model: ActorModel,
                     attributes: ['id', 'name'], // Specify the attributes you want to retrieve
                     through: {attributes: []} // Exclude join table attributes
+                },
+                {
+                    model: CommentModel,
+                    attributes: ['id', 'content', 'rating'], // Specify the attributes you want to retrieve
+                    include: [
+                        {
+                            model: UserModel,
+                            attributes: ['id', 'full_name', 'email'], // Specify the attributes you want to retrieve
+                        }
+                    ]
                 }
             ]
         });
+        if (!movie) {
+            return {
+                error: true,
+                message: 'Movie not found',
+                data: null
+            }
+        }
+        const accountCanView = movie?.account_can_view;
+        let checkRole = (role) => {
+            return role.toString() === '1' || role.toString() === '2';
+        }
+        if (accountCanView === 'vip' && !checkRole(role)) {
+            return {
+                error: true,
+                message: 'Bạn không có quyền xem phim này, vui lòng nâng cấp tài khoản VIP',
+                data: null
+            }
+        }
         return {
             error: false,
             message: 'Movie found',
@@ -164,7 +212,19 @@ const updateMovie = async (id, data) => {
                 data: null
             }
         }
-        const {title, content, year, duration, quality, rating, url_image, url_video, categories, actors} = data;
+        const {
+            title,
+            content,
+            year,
+            duration,
+            quality,
+            rating,
+            url_image,
+            url_video,
+            categories,
+            actors,
+            account_can_view
+        } = data;
         if (title) {
             movie.title = title;
         }
@@ -188,6 +248,9 @@ const updateMovie = async (id, data) => {
         }
         if (year) {
             movie.year = year;
+        }
+        if (account_can_view) {
+            movie.account_can_view = account_can_view;
         }
         await movie.save();
         const movieId = movie?.id;
@@ -241,8 +304,14 @@ const deleteMovie = async (id) => {
                 data: null
             }
         }
-        await deleteCategoryMovie(id);
-        await deleteActorMovie(id);
+        await Promise.all([
+            deleteCategoryMovie(id),
+            deleteActorMovie(id),
+            FavoriteModel.destroy({where: {movie_id: id}}),
+            WatchHistoryModel.destroy({where: {movie_id: id}}),
+            CommentModel.destroy({where: {movie_id: id}})
+        ]);
+
         await movie.destroy();
         return {
             error: false,

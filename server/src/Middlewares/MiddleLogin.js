@@ -31,7 +31,7 @@ const MiddlewareLogin = {
     },
     verifyTokenAndAdmin: (req, res, next) => {
         MiddlewareLogin.verifyToken(req, res, () => {
-            if (req.user.isAdmin) {
+            if (req.user.role.toString() === '1') {
                 return next();
             } else {
                 return res.status(403).json(
@@ -44,5 +44,20 @@ const MiddlewareLogin = {
             }
         })
     },
+    verifyTokenVip: (req, res, next) => {
+        MiddlewareLogin.verifyToken(req, res, () => {
+            if (req.user.role.toString() === '2') {
+                return next();
+            } else {
+                return res.status(403).json(
+                    {
+                        error: true,
+                        data: null,
+                        message: "You're not allowed to do that!"
+                    }
+                );
+            }
+        })
+    }
 }
 module.exports = MiddlewareLogin;

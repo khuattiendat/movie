@@ -27,7 +27,8 @@ const MovieController = {
     getMovieBySlugOrId: async (req, res) => {
         try {
             const {slug} = req.params;
-            const result = await getMovieBySlugOrId(slug);
+            const role = req?.user?.role;
+            const result = await getMovieBySlugOrId(slug, role);
             if (result.error) {
                 return res.status(400).json({
                     error: true,

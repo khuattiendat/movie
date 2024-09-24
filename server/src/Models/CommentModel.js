@@ -22,3 +22,4 @@ const CommentModel = sequelize.define('comments', {
     tableName: 'comments',
     timestamps: true
 });
+module.exports = CommentModel;

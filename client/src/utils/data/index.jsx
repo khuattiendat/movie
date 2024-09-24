@@ -43,137 +43,13 @@ export const menu = [
             },
         ],
     },
-    // {
-    //     id: 4,
-    //     title: "Maintenance",
-    //     listItems: [
-    //         {
-    //             id: 1,
-    //             title: "Settings",
-    //             url: "/",
-    //             icon: "/setting.svg",
-    //         },
-    //         {
-    //             id: 2,
-    //             title: "Backups",
-    //             url: "/",
-    //             icon: "/backup.svg",
-    //         },
-    //     ],
-    // },
-    // {
-    //     id: 5,
-    //     title: "analytics",
-    //     listItems: [
-    //         {
-    //             id: 1,
-    //             title: "Charts",
-    //             url: "/",
-    //             icon: "/chart.svg",
-    //         },
-    //         {
-    //             id: 2,
-    //             title: "Logs",
-    //             url: "/",
-    //             icon: "/log.svg",
-    //         },
-    //     ],
-    // },
 ];
-export const classData = [
-    {
-        id: 1,
-        name: "Lớp 1",
-    },
-    {
-        id: 2,
-        name: "Lớp 2",
-    },
-    {
-        id: 3,
-        name: "Lớp 3",
-    },
-    {
-        id: 4,
-        name: "Lớp 4",
-    },
-    {
-        id: 5,
-        name: "Lớp 5",
-    },
-    {
-        id: 6,
-        name: "Lớp 6",
-    },
-    {
-        id: 7,
-        name: "Lớp 7",
-    },
-    {
-        id: 8,
-        name: "Lớp 8",
-    },
-    {
-        id: 9,
-        name: "Lớp 9",
-    },
-    {
-        id: 10,
-        name: "Lớp 10",
-    },
-    {
-        id: 11,
-        name: "Lớp 11",
-    },
-    {
-        id: 12,
-        name: "Lớp 12",
-    },
-]
-export const subjectData = [
-    {
-        id: 1,
-        name: "Toán",
-    },
-    {
-        id: 2,
-        name: "Lý",
-    },
-    {
-        id: 3,
-        name: "Hóa",
-    },
-    {
-        id: 4,
-        name: "Sinh",
-    },
-    {
-        id: 5,
-        name: "Văn",
-    },
-    {
-        id: 6,
-        name: "Anh",
-    },
-    {
-        id: 7,
-        name: "Sử",
-    },
-    {
-        id: 8,
-        name: "Địa",
-    },
-    {
-        id: 9,
-        name: "GDCD",
-    },
-]
 export const chartBoxUser = {
     color: "#8884d8",
     icon: "/userIcon.svg",
     title: "Tổng số user",
     link: "/admin/user/danh-sach",
-    number: "11.238",
+    number: "0",
     dataKey: "users",
     percentage: 45,
     chartData: [
@@ -187,12 +63,12 @@ export const chartBoxUser = {
     ],
 };
 
-export const chartBoxExam = {
+export const chartBoxMovie = {
     color: "skyblue",
     icon: "/productIcon.svg",
-    title: "Tổng số đề thi",
-    link: "/admin/exam/danh-sach",
-    number: "238",
+    title: "Tổng số phim",
+    link: "/admin/movie/danh-sach",
+    number: "0",
     dataKey: "products",
     percentage: 21,
     chartData: [
@@ -205,11 +81,12 @@ export const chartBoxExam = {
         {name: "Sat", products: 450},
     ],
 };
-export const chartBoxRevenue = {
+export const chartBoxActor = {
     color: "teal",
     icon: "/revenueIcon.svg",
-    title: "Tổng số câu hỏi",
-    number: "$56.432",
+    title: "Tổng số diễn viên",
+    number: "0",
+    link: "/admin/actor/danh-sach",
     dataKey: "revenue",
     percentage: -12,
     chartData: [
@@ -222,11 +99,12 @@ export const chartBoxRevenue = {
         {name: "Sat", revenue: 450},
     ],
 };
-export const chartBoxConversion = {
+export const chartBoxCategory = {
     color: "gold",
     icon: "/conversionIcon.svg",
-    title: "Total Ratio",
-    number: "2.6",
+    title: "Tổng số thể loại",
+    link: "/admin/category/danh-sach",
+    number: "0",
     dataKey: "ratio",
     percentage: 12,
     chartData: [

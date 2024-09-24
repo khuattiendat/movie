@@ -2,9 +2,42 @@ const UserModel = require('../Models/UserModel');
 const {generateAccessToken} = require('../Utils/generateToken');
 const bcrypt = require("bcrypt");
 const {Op} = require('sequelize');
+const RoleUserModel = require('../Models/RoleUserModel');
+const CommentModel = require('../Models/CommentModel');
+const FavoriteModel = require('../Models/FavoriteModel');
+const WatchHistoryModel = require('../Models/WatchHistoryModel');
+const createRoleUser = async (user_id, role_id) => {
+    try {
+        const newRoleUser = await new RoleUserModel({
+            user_id,
+            role_id
+        });
+        await newRoleUser.save();
+        return {
+            error: false,
+            data: newRoleUser,
+            message: 'Create role user successfully'
+        }
+    } catch (error) {
+        return {
+            error: true,
+            data: null,
+            message: error || error
+        }
+    }
+}
 const getAllUser = async () => {
     try {
-        const users = await UserModel.findAll();
+        UserModel.hasOne(RoleUserModel, {foreignKey: 'user_id'});
+        const users = await UserModel.findAll({
+            attributes: {exclude: ['password']},
+            include: [
+                {
+                    model: RoleUserModel,
+                    required: true
+                }
+            ]
+        });
         return {
             error: false,
             data: users,
@@ -83,6 +116,7 @@ const register = async (user) => {
             url_image
         });
         await newUser.save();
+        await createRoleUser(newUser.id, 3);
         const {password: pass, ...userWithoutPassword} = newUser.dataValues;
         return {
             error: false,
@@ -99,6 +133,7 @@ const register = async (user) => {
 }
 const login = async (user) => {
     try {
+        UserModel.hasOne(RoleUserModel, {foreignKey: 'user_id'});
         const {email, password} = user;
         if (!email) {
             return {
@@ -117,7 +152,13 @@ const login = async (user) => {
         const userExist = await UserModel.findOne({
             where: {
                 email
-            }
+            },
+            include: [
+                {
+                    model: RoleUserModel,
+                    required: true
+                }
+            ]
         });
         if (!userExist) {
             return {
@@ -134,8 +175,8 @@ const login = async (user) => {
                 message: 'Password incorrect'
             }
         }
-        const isAdmin = userExist.role_id.toString() === '1';
-        const token = generateAccessToken(userExist.id, isAdmin);
+        const role = userExist?.role_user?.role_id;
+        const token = generateAccessToken(userExist.id, role);
         const {password: pass, ...userWithoutPassword} = userExist.dataValues;
         return {
             error: false,
@@ -234,11 +275,14 @@ const deleteUser = async (id) => {
                 message: 'User not found'
             }
         }
-        const deletedUser = await UserModel.destroy({
-            where: {
-                id
-            }
-        });
+        await Promise.all([
+            RoleUserModel.destroy({where: {user_id: id}}),
+            CommentModel.destroy({where: {user_id: id}}),
+            FavoriteModel.destroy({where: {user_id: id}}),
+            WatchHistoryModel.destroy({where: {user_id: id}})
+        ]);
+
+        const deletedUser = await UserModel.destroy({where: {id}});
         if (!deletedUser) {
             return {
                 error: true,

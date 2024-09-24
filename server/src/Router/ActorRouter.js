@@ -1,9 +1,10 @@
 const express = require('express');
 const ActorController = require('../Controllers/ActorController');
+const Middleware = require('../Middlewares/MiddleLogin');
 const router = express.Router();
-router.post('/create', ActorController.createActor);
-router.get('/get-one/:id', ActorController.getActorById);
-router.get('/get-all', ActorController.getAllActors);
-router.put('/update/:id', ActorController.updateActor);
-router.delete('/delete/:id', ActorController.deleteActor);
+router.post('/create', Middleware.verifyTokenAndAdmin, ActorController.createActor);
+router.get('/get-one/:id', Middleware.verifyTokenAndAdmin, ActorController.getActorById);
+router.get('/get-all', Middleware.verifyTokenAndAdmin, ActorController.getAllActors);
+router.put('/update/:id', Middleware.verifyTokenAndAdmin, ActorController.updateActor);
+router.delete('/delete/:id', Middleware.verifyTokenAndAdmin, ActorController.deleteActor);
 module.exports = router;

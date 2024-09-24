@@ -17,7 +17,6 @@ const Form = (props) => {
     const user = useSelector(state => state.user)
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    console.log(_data)
     //
     const [data, setData] = useState({});
     useEffect(() => {
@@ -34,7 +33,7 @@ const Form = (props) => {
     const handleCreateUser = async () => {
         try {
             setLoading(true);
-            await createUser(data);
+            await createUser(user.token, data);
             toast.success('Thêm mới thành công');
             setLoading(false);
             navigate(`/admin/user/danh-sach`, {replace: true});
@@ -49,7 +48,7 @@ const Form = (props) => {
     const handleUpdateUser = async () => {
         try {
             setLoading(true);
-            await updateUser(data.id, data);
+            await updateUser(user.token, data.id, data);
             toast.success('Cập nhật thành công');
             setLoading(false);
             navigate(`/admin/user/danh-sach`, {replace: true});
@@ -65,7 +64,7 @@ const Form = (props) => {
     const handleCreateCategory = async () => {
         try {
             setLoading(true);
-            await createCategory(data);
+            await createCategory(user?.token, data);
             toast.success('Thêm mới thành công');
             setLoading(false);
             navigate(`/admin/category/danh-sach`, {replace: true});
@@ -80,7 +79,7 @@ const Form = (props) => {
     const handleUpdateCategory = async () => {
         try {
             setLoading(true);
-            await updateCategory(data.id, data);
+            await updateCategory(user.token, data.id, data);
             toast.success('Cập nhật thành công');
             setLoading(false);
             navigate(`/admin/category/danh-sach`, {replace: true});
@@ -96,7 +95,7 @@ const Form = (props) => {
     const handleCreateActor = async () => {
         try {
             setLoading(true);
-            await createActor(data);
+            await createActor(user?.token, data);
             toast.success('Thêm mới thành công');
             setLoading(false);
             navigate(`/admin/actor/danh-sach`, {replace: true});
@@ -111,7 +110,7 @@ const Form = (props) => {
     const handleUpdateActor = async () => {
         try {
             setLoading(true);
-            await updateActor(data.id, data);
+            await updateActor(user?.token, data.id, data);
             toast.success('Cập nhật thành công');
             setLoading(false);
             navigate(`/admin/actor/danh-sach`, {replace: true});

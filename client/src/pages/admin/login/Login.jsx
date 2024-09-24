@@ -27,7 +27,8 @@ const Login = () => {
         try {
             setLoading(true)
             const res = await login(data)
-            if (res.data.user?.role_id.toString() !== '1') {
+            console.log(res.data)
+            if (res.data.user?.role_user?.role_id.toString() !== '1') {
                 toast.error('Bạn không có quyền truy cập', {
                     autoClose: 1000,
                 })
@@ -40,7 +41,7 @@ const Login = () => {
                 id: res.data.user.id,
                 name: res.data.user.full_name,
                 phone: res.data.user.phone,
-                role: res.data.user.role_id,
+                role: res.data.user?.role_user?.role_id.toString() === '1' ? 'admin' : 'user',
                 email: res.data.user.email,
                 token: res.data.token
             }))

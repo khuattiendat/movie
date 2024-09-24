@@ -1,4 +1,5 @@
 const ActorModel = require('../Models/ActorModel');
+const ActorMovieModel = require('../Models/ActorMovieModel');
 const {Op} = require("sequelize");
 const createActor = async (actor) => {
     try {
@@ -101,6 +102,18 @@ const deleteActor = async (id) => {
             return {
                 error: true,
                 message: 'Actor not found',
+                data: null
+            }
+        }
+        const actorMovies = await ActorMovieModel.findAll({
+            where: {
+                actor_id: id
+            }
+        });
+        if (actorMovies.length > 0) {
+            return {
+                error: true,
+                message: 'Actor has movies',
                 data: null
             }
         }

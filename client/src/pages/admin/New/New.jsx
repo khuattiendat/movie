@@ -12,6 +12,7 @@ import {getActorById} from "../../../apis/actor.js";
 import {inputDataActor} from "../../../utils/data/actor.js";
 import {inputDataMovie} from "../../../utils/data/movieData.js";
 import {getMovieByIdOrSlug} from "../../../apis/movie.js";
+import {toast} from "react-toastify";
 
 const New = ({type, isEdit}) => {
     const params = useParams();
@@ -47,10 +48,13 @@ const New = ({type, isEdit}) => {
             case 'user':
                 try {
                     setLoading(true)
-                    let exam = await getUserById(id);
+                    let exam = await getUserById(user.token, id);
                     setData(exam.data)
                     setLoading(false)
                 } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000
+                    });
                     setLoading(false)
                     console.log(e)
                 }
@@ -58,10 +62,13 @@ const New = ({type, isEdit}) => {
             case 'category':
                 try {
                     setLoading(true)
-                    let exam = await getCategoryBySlugOrId(id);
+                    let exam = await getCategoryBySlugOrId(user.token, id);
                     setData(exam.data)
                     setLoading(false)
                 } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000
+                    });
                     setLoading(false)
                     console.log(e)
                 }
@@ -69,10 +76,13 @@ const New = ({type, isEdit}) => {
             case 'actor':
                 try {
                     setLoading(true)
-                    let exam = await getActorById(id);
+                    let exam = await getActorById(user?.token, id);
                     setData(exam.data)
                     setLoading(false)
                 } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000
+                    });
                     setLoading(false)
                     console.log(e)
                 }
@@ -80,10 +90,13 @@ const New = ({type, isEdit}) => {
             case 'movie':
                 try {
                     setLoading(true)
-                    let exam = await getMovieByIdOrSlug(id);
+                    let exam = await getMovieByIdOrSlug(user.token, id);
                     setData(exam.data)
                     setLoading(false)
                 } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000
+                    });
                     setLoading(false)
                     console.log(e)
                 }

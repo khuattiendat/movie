@@ -1,5 +1,7 @@
 const categoryModel = require('../Models/CategoryModel');
 const {Op} = require("sequelize");
+const CategoryMovieModel = require('../Models/CategoryMovieModel');
+const MovieModel = require('../Models/MovieModel');
 const addCategory = async (category) => {
     try {
         const {name, description, slug} = category;
@@ -155,6 +157,16 @@ const deleteCategory = async (id) => {
             return {
                 error: true,
                 message: 'Category not found',
+                data: null
+            }
+        }
+        const categoryMovies = await CategoryMovieModel.findAll({
+            where: {category_id: id}
+        });
+        if (categoryMovies.length > 0) {
+            return {
+                error: true,
+                message: 'Category has movies',
                 data: null
             }
         }

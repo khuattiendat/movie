@@ -1,5 +1,6 @@
 const {DataTypes} = require('sequelize');
 const {sequelize} = require('../Configs/connect');
+const CommentModel = require("./CommentModel");
 const UserModel = sequelize.define('users', {
     id: {
         type: DataTypes.INTEGER,
@@ -25,19 +26,15 @@ const UserModel = sequelize.define('users', {
         allowNull: false,
         unique: true,
     },
-    account_type: {
-        type: DataTypes.STRING,
+    core: {
+        type: DataTypes.NUMBER,
         allowNull: false,
-        defaultValue: 'often',
-    },
-    role_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 2
+        defaultValue: 0
     },
 }, {
     tableName: 'users',
     timestamps: true,
     paranoid: true,
 })
+UserModel.hasMany(CommentModel, {foreignKey: 'user_id'});
 module.exports = UserModel;

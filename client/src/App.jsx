@@ -42,6 +42,8 @@ function App() {
             ],
         },
         {path: "/admin/login", element: <Login/>},
+        {path: "/success", element: <div>success</div>},
+        {path: "/cancel", element: <div>cancel</div>},
     ]);
     return <RouterProvider router={router}/>;
 }

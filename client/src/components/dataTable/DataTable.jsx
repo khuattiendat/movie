@@ -16,6 +16,10 @@ import {deleteCategory} from "../../apis/category.js";
 import {deleteActor} from "../../apis/actor.js";
 import {deleteMovie} from "../../apis/movie.js";
 
+const accountType = (id) => {
+    const arr = ['admin', 'user', 'often']
+    return arr[id - 1]
+}
 
 const DataTable = (props) => {
     const {columns, rows, type, loading} = props;
@@ -32,7 +36,7 @@ const DataTable = (props) => {
                 });
                 return;
             }
-            await deleteUser(id);
+            await deleteUser(user.token, id);
             toast.success("Xóa thành công", {
                 autoClose: 1000
             });
@@ -41,6 +45,9 @@ const DataTable = (props) => {
                 state: id,
             });
         } catch (e) {
+            toast.error(e.response.data.message, {
+                autoClose: 1000
+            });
             setLoading(false)
             console.log(e);
         }
@@ -48,7 +55,7 @@ const DataTable = (props) => {
     const handleDeleteCategory = async (id) => {
         try {
             setLoading(true);
-            await deleteCategory(id);
+            await deleteCategory(user.token, id);
             toast.success("Xóa thành công", {
                 autoClose: 1000
             });
@@ -57,6 +64,9 @@ const DataTable = (props) => {
                 state: id,
             });
         } catch (e) {
+            toast.error(e.response.data.message, {
+                autoClose: 1000
+            });
             setLoading(false)
             console.log(e);
         }
@@ -64,7 +74,7 @@ const DataTable = (props) => {
     const handleDeleteActor = async (id) => {
         try {
             setLoading(true);
-            await deleteActor(id);
+            await deleteActor(user?.token, id);
             toast.success("Xóa thành công", {
                 autoClose: 1000
             });
@@ -73,6 +83,9 @@ const DataTable = (props) => {
                 state: id,
             });
         } catch (e) {
+            toast.error(e.response.data.message, {
+                autoClose: 1000
+            });
             setLoading(false)
             console.log(e);
         }
@@ -80,7 +93,7 @@ const DataTable = (props) => {
     const handleDeleteMovie = async (id) => {
         try {
             setLoading(true);
-            await deleteMovie(id);
+            await deleteMovie(user.token, id);
             toast.success("Xóa thành công", {
                 autoClose: 1000
             });
@@ -89,6 +102,9 @@ const DataTable = (props) => {
                 state: id,
             });
         } catch (e) {
+            toast.error(e.response.data.message, {
+                autoClose: 1000
+            });
             setLoading(false)
             console.log(e);
         }
@@ -103,11 +119,11 @@ const DataTable = (props) => {
                 case "category":
                     await handleDeleteCategory(id);
                     break;
-                case "actor":
-                    await handleDeleteActor(id);
-                    break;
                 case "movie":
                     await handleDeleteMovie(id);
+                    break;
+                case "actor":
+                    await handleDeleteActor(id);
                     break;
                 default:
                     break;
@@ -123,23 +139,16 @@ const DataTable = (props) => {
             return (
                 <div className="action">
                     {
-                        type !== 'data' &&
                         <Link to={`/admin/${type}/sua/${params.row.id}`}
                               className={'btn btn-secondary'}>
                             Sửa
                         </Link>
                     }
 
-                    <div className="delete" onClick={() => handleDelete(params.row.id)}>
+                    <div className="delete"
+                         onClick={() => handleDelete(params.row.id)}>
                         <button className='btn btn-danger'>Xóa</button>
                     </div>
-                    {
-                        type === 'exam' &&
-                        <Link to={`/admin/data/${params.row._id}`}
-                              className='btn btn-primary'>
-                            Data
-                        </Link>
-                    }
 
                 </div>
             );
@@ -149,6 +158,7 @@ const DataTable = (props) => {
         if (type === 'user') {
             rows.map(row => {
                 row.createdAt = moment(row.createdAt).format('DD/MM/YYYY HH:mm:ss')
+                row.account_type = accountType(row?.role_user?.role_id)
             })
         }
     }, [type, rows])

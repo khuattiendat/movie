@@ -1,6 +1,6 @@
 const {DataTypes} = require('sequelize');
 const {sequelize} = require('../Configs/connect');
-const WatchHistoryModel = sequelize.define('watch_histories', {
+const WatchHistoryModel = sequelize.define('watch_history', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -16,6 +16,7 @@ const WatchHistoryModel = sequelize.define('watch_histories', {
         type: DataTypes.DATE
     }
 }, {
-    tableName: 'watch_histories',
+    tableName: 'watch_history',
     timestamps: false
 });
+module.exports = WatchHistoryModel;
