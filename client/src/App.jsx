@@ -39,6 +39,8 @@ function App() {
                 {path: "/admin/actor/danh-sach", element: <List type='actor'/>},
                 {path: "/admin/actor/them-moi", element: <New type='actor'/>},
                 {path: "/admin/actor/sua/:id", element: <New type='actor' isEdit={true}/>},
+                //transaction
+                {path: "/admin/transaction/danh-sach", element: <List type='transaction'/>},
             ],
         },
         {path: "/admin/login", element: <Login/>},

@@ -12,6 +12,8 @@ import {getAllActor} from "../../../apis/actor.js";
 import {actorColumns} from "../../../utils/data/actor.js";
 import {getAllMovies} from "../../../apis/movie.js";
 import {movieColumns} from "../../../utils/data/movieData.js";
+import {TransactionColumns} from "../../../utils/data/transactionData.js";
+import {getAllTransaction} from "../../../apis/transaction.js";
 
 const List = ({type}) => {
     const params = useParams()
@@ -74,6 +76,21 @@ const List = ({type}) => {
                     setLoading(true);
                     const res = await getAllMovies(user?.token);
                     setColumns(movieColumns);
+                    setRows(res.data);
+                    setLoading(false);
+                } catch (e) {
+                    toast.error(e.response.data.message, {
+                        autoClose: 1000,
+                    });
+                    console.log(e);
+                    setLoading(false);
+                }
+                break;
+            case 'transaction':
+                try {
+                    setLoading(true);
+                    const res = await getAllTransaction(user?.token);
+                    setColumns(TransactionColumns);
                     setRows(res.data);
                     setLoading(false);
                 } catch (e) {

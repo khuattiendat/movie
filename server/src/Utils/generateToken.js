@@ -9,6 +9,16 @@ const generateAccessToken = (userId, role) => {
         expiresIn: '1d'
     })
 }
+const generateRefreshToken = (userId, role) => {
+    return jwt.sign({
+        userId,
+        role
+    }, process.env.JWT_REFRESH_KEY, {
+        // token hết hạn sau 1d
+        expiresIn: '1d'
+    })
+}
 module.exports = {
     generateAccessToken,
+    generateRefreshToken
 }

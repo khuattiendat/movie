@@ -1,11 +1,13 @@
 const UserModel = require('../Models/UserModel');
-const {generateAccessToken} = require('../Utils/generateToken');
+const {generateAccessToken, generateRefreshToken} = require('../Utils/generateToken');
 const bcrypt = require("bcrypt");
 const {Op} = require('sequelize');
 const RoleUserModel = require('../Models/RoleUserModel');
 const CommentModel = require('../Models/CommentModel');
 const FavoriteModel = require('../Models/FavoriteModel');
 const WatchHistoryModel = require('../Models/WatchHistoryModel');
+const jwt = require('jsonwebtoken');
+
 const createRoleUser = async (user_id, role_id) => {
     try {
         const newRoleUser = await new RoleUserModel({
@@ -177,20 +179,23 @@ const login = async (user) => {
         }
         const role = userExist?.role_user?.role_id;
         const token = generateAccessToken(userExist.id, role);
+        const refreshToken = generateRefreshToken(userExist.id, role);
         const {password: pass, ...userWithoutPassword} = userExist.dataValues;
         return {
             error: false,
             data: {
                 user: userWithoutPassword,
+                refreshToken,
                 token
             },
             message: 'Login successfully'
         }
     } catch (error) {
+        console.log(error)
         return {
             error: true,
             data: null,
-            message: error || error
+            message: error || error.message
         }
     }
 }
@@ -398,6 +403,91 @@ const changePassword = async (id, data) => {
         }
     }
 }
+const refreshToken = async (refreshToken) => {
+    try {
+        const key = process.env.JWT_REFRESH_KEY;
+        let token = null;
+        jwt.verify(refreshToken, key, (err, user) => {
+            if (err) {
+                return {
+                    error: true,
+                    data: null,
+                    message: "Token is not valid"
+                };
+            }
+            token = generateAccessToken(user.userId, user.role);
+        });
+        return {
+            error: false,
+            data: {
+                token: token
+            },
+            message: 'Refresh token successfully'
+        }
+
+    } catch (error) {
+        return {
+            error: true,
+            data: null,
+            message: error || error.message
+        }
+    }
+}
+const updateRoleVIP = async (id) => {
+    try {
+        const userExist = await UserModel.findOne({
+            where: {
+                id
+            }
+        });
+        if (!userExist) {
+            return {
+                error: true,
+                data: null,
+                message: 'User not found'
+            }
+        }
+        if (userExist.role_id === 2) {
+            return {
+                error: true,
+                data: null,
+                message: 'User is already VIP'
+            }
+        }
+        if (Number(userExist?.core) < 200000) {
+            return {
+                error: true,
+                data: null,
+                message: 'Not enough core to upgrade to VIP'
+            }
+        }
+        await UserModel.update({
+            core: Number(userExist?.core) - 200000
+        }, {
+            where: {
+                id
+            }
+        });
+        await RoleUserModel.update({
+            role_id: 2
+        }, {
+            where: {
+                user_id: id
+            }
+        });
+        return {
+            error: false,
+            data: null,
+            message: 'Update role VIP successfully'
+        }
+    } catch (error) {
+        return {
+            error: true,
+            data: null,
+            message: error || error
+        }
+    }
+}
 module.exports = {
     register,
     login,
@@ -405,5 +495,7 @@ module.exports = {
     deleteUser,
     getAllUser,
     getUserById,
-    changePassword
+    changePassword,
+    refreshToken,
+    updateRoleVIP
 }

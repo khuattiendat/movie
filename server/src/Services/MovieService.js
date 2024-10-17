@@ -175,6 +175,8 @@ const getMovieBySlugOrId = async (slug, role) => {
             }
         }
         const accountCanView = movie?.account_can_view;
+        const totalRating = movie?.comments?.reduce((total, comment) => total + comment.rating, 0);
+        const averageRating = Math.floor(movie?.comments?.length ? totalRating / movie.comments.length : 0);
         let checkRole = (role) => {
             return role.toString() === '1' || role.toString() === '2';
         }
@@ -185,6 +187,7 @@ const getMovieBySlugOrId = async (slug, role) => {
                 data: null
             }
         }
+        movie.setDataValue('average_rating', averageRating);
         return {
             error: false,
             message: 'Movie found',

@@ -41,6 +41,12 @@ export const menu = [
                 url: "/admin/movie/danh-sach",
                 icon: "/order.svg",
             },
+            {
+                id: 5,
+                title: "Danh sách giao dịch",
+                url: "/admin/transaction/danh-sach",
+                icon: "/note.svg",
+            },
         ],
     },
 ];

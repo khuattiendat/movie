@@ -5,8 +5,11 @@ const {
     deleteUser,
     getAllUser,
     changePassword,
-    getUserById
+    getUserById,
+    refreshToken,
+    updateRoleVIP
 } = require("../Services/UserService");
+let refreshTokens = [];
 const UserController = {
     register: async (req, res) => {
         try {
@@ -43,9 +46,19 @@ const UserController = {
                     message: response.message
                 });
             }
+            const oldRefreshToken = req.cookies.refreshToken;
+            refreshTokens = refreshTokens.filter(token => token !== oldRefreshToken.toString());
+            const newRefreshToken = response.data.refreshToken;
+            refreshTokens.push(newRefreshToken);
+            res.cookie('refreshToken', newRefreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none'
+            });
+            const {refreshToken, ...payload} = response.data;
             return res.status(200).json({
                 error: false,
-                data: response.data,
+                data: payload,
                 message: response.message
             });
         } catch (error) {
@@ -160,6 +173,68 @@ const UserController = {
             const {id} = req.params;
             const data = req.body;
             const response = await changePassword(id, data);
+            if (response.error) {
+                return res.status(400).json({
+                    error: true,
+                    data: null,
+                    message: response.message
+                });
+            }
+            return res.status(200).json({
+                error: false,
+                data: response.data,
+                message: response.message
+            });
+        } catch (error) {
+            return res.status(500).json({
+                error: true,
+                data: null,
+                message: error.message || error
+            });
+        }
+    },
+    refreshToken: async (req, res) => {
+        try {
+            const oldRefreshToken = req.cookies.refreshToken;
+            if (!oldRefreshToken) {
+                return res.status(400).json({
+                    error: true,
+                    data: null,
+                    message: 'Refresh token not found'
+                });
+            }
+            if (!refreshTokens.includes(oldRefreshToken)) {
+                return res.status(400).json({
+                    error: true,
+                    data: null,
+                    message: 'Refresh token is invalid'
+                });
+            }
+            const response = await refreshToken(oldRefreshToken);
+            if (response.error) {
+                return res.status(400).json({
+                    error: true,
+                    data: null,
+                    message: response.message
+                });
+            }
+            return res.status(200).json({
+                error: false,
+                data: response.data,
+                message: response.message
+            });
+        } catch (error) {
+            return res.status(500).json({
+                error: true,
+                data: null,
+                message: error.message || error
+            });
+        }
+    },
+    updateRoleVIP: async (req, res) => {
+        try {
+            const {id} = req.params;
+            const response = await updateRoleVIP(id);
             if (response.error) {
                 return res.status(400).json({
                     error: true,

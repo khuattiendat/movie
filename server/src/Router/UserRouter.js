@@ -9,6 +9,8 @@ router.post('/login', UserController.login);
 router.put('/update/:id', Middleware.verifyToken, UserController.updateUser);
 router.delete('/delete/:id', Middleware.verifyTokenAndAdmin, UserController.deleteUser);
 router.put('/change-password/:id', Middleware.verifyToken, UserController.changePassword);
+router.post('/refresh-token', UserController.refreshToken);
 router.get('/get-one/:id', Middleware.verifyToken, UserController.getUserById);
+router.put('/update-role-vip/:id', Middleware.verifyToken, UserController.updateRoleVIP);
 
 module.exports = router;
