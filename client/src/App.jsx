@@ -8,6 +8,7 @@ import New from "./pages/admin/New/New.jsx";
 import List from "./pages/admin/list/List.jsx";
 import React from "react";
 import LayoutAdmin from "./pages/layout/LayoutAdmin/LayoutAdmin.jsx";
+import ExportExcel from "./components/ExportExcel.jsx";
 
 function App() {
     const router = createBrowserRouter([
@@ -46,6 +47,9 @@ function App() {
         {path: "/admin/login", element: <Login/>},
         {path: "/success", element: <div>success</div>},
         {path: "/cancel", element: <div>cancel</div>},
+        {
+            path: "/test", element: <ExportExcel/>
+        }
     ]);
     return <RouterProvider router={router}/>;
 }

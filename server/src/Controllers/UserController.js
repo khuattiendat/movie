@@ -47,8 +47,8 @@ const UserController = {
                 });
             }
             const oldRefreshToken = req.cookies.refreshToken;
-            refreshTokens = refreshTokens.filter(token => token !== oldRefreshToken.toString());
-            const newRefreshToken = response.data.refreshToken;
+            refreshTokens = refreshTokens?.filter(token => token !== oldRefreshToken?.toString());
+            const newRefreshToken = response?.data?.refreshToken;
             refreshTokens.push(newRefreshToken);
             res.cookie('refreshToken', newRefreshToken, {
                 httpOnly: true,

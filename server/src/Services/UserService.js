@@ -178,6 +178,7 @@ const login = async (user) => {
             }
         }
         const role = userExist?.role_user?.role_id;
+        console.log(role)
         const token = generateAccessToken(userExist.id, role);
         const refreshToken = generateRefreshToken(userExist.id, role);
         const {password: pass, ...userWithoutPassword} = userExist.dataValues;

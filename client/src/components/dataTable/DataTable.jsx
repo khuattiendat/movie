@@ -239,6 +239,11 @@ const DataTable = (props) => {
         },
     };
     useEffect(() => {
+        if(type === 'movie'){
+            rows.map(row => {
+                row.createdAt = moment(row?.createdAt)?.format('DD/MM/YYYY HH:mm:ss')
+            })
+        }
         if (type === 'user') {
             rows.map(row => {
                 row.createdAt = moment(row.createdAt).format('DD/MM/YYYY HH:mm:ss')
